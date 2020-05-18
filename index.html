@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vishnu Examly</title>
+    <link href="./bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="./style.css">
+    <script src="./jquery-3.5.1.min.js"></script>
+    <script src="./bootstrap.min.js"></script>
+    <script src="./script.js"></script>
+
+</head>
+<body>
+
+<div>
+     
+     <div id="question">
+      Sample Question ???
+     </div>
+     <div id="answerSection">
+       <span id="option_0" ><input onclick="loadNxtQn('option_value_0')" type="radio" name="q_answer" value="1"><span id="option_value_0">Option 1</span><br/></span>
+       <span id="option_1" ><input onclick="loadNxtQn('option_value_1')" type="radio" name="q_answer" value="1"><span id="option_value_1">Option 1</span><br/></span>
+       <span id="option_2" ><input onclick="loadNxtQn('option_value_2')" type="radio" name="q_answer" value="1"><span id="option_value_2">Option 1</span><br/></span>
+       <span id="option_3" ><input onclick="loadNxtQn('option_value_3')" type="radio" name="q_answer" value="1"><span id="option_value_3">Option 1</span><br/></span>
+       <span id="option_4" ><input onclick="loadNxtQn('option_value_4')" type="radio" name="q_answer" value="1"><span id="option_value_4">Option 1</span><br/></span>
+       <span id="option_5" ><input onclick="loadNxtQn('option_value_5')" type="radio" name="q_answer" value="1"><span id="option_value_5">Option 1</span><br/></span>
+       <span id="option_6" ><input onclick="loadNxtQn('option_value_6')" type="radio" name="q_answer" value="1"><span id="option_value_6">Option 1</span><br/></span>
+       <span id="option_7" ><input onclick="loadNxtQn('option_value_7')" type="radio" name="q_answer" value="1"><span id="option_value_7">Option 1</span><br/></span>
+       <span id="option_8" ><input onclick="loadNxtQn('option_value_8')" type="radio" name="q_answer" value="1"><span id="option_value_8">Option 1</span><br/></span>
+       <span id="option_9" ><input onclick="loadNxtQn('option_value_9')" type="radio" name="q_answer" value="1"><span id="option_value_9">Option 1</span><br/></span>
+     </div>
+  <p id="demo"></p>
+     <div class="modal-footer text-muted">
+      <span id="answer"></span>
+  </div>
+  </div>
+  </div>
+  </div>
+</body>
+<script type="text/javascript">
+  var currQn = 0;
+  var totalQns = 0;
+  var response = undefined;
+  var crctAnswers = 0;
+  
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if(this.readyState == 4 && this.status == 200) {
+        //document.getElementById("demo").innerHTML = this.responseText;
+        response = JSON.parse(this.responseText).results;
+        totalQns = response.length;
+        console.log(totalQns);
+        loadNxtQn();
+      }
+    };
+    xhttp.open("GET", "https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple", true);
+    xhttp.send();
+  
+  function loadNxtQn(selectedOption) {
+    console.log(currQn+" - "+totalQns);
+    if(selectedOption!=undefined) {
+      var selectedAns = document.getElementById(selectedOption).innerHTML;
+      if(selectedAns==response[currQn-1].correct_answer) {
+        crctAnswers++;
+        console.log("crct");
+        document.getElementById("answer").innerHTML="correct";
+      } else {
+        console.log("incrct");
+        document.getElementById("answer").innerHTML="incorrect";
+      }
+    }
+    if(currQn==totalQns) {
+
+      document.getElementById("answer").innerHTML="End of Questions. Total Correct answers - "+crctAnswers+" out of "+totalQns;
+      return;
+    }
+    document.getElementById("question").innerHTML = response[currQn].question;
+    var ansArr= [];
+    ansArr.push(response[currQn].correct_answer);
+    for(var i=0;i<response[currQn].incorrect_answers.length;i++) {
+      ansArr.push(response[currQn].incorrect_answers[i]);
+    }
+    var ansLength = ansArr.length;
+    for(var i=0;i<10;i++) {
+      if(i<ansLength) {
+        document.getElementById("option_"+i).value=ansArr[i];
+        document.getElementById("option_value_"+i).innerHTML=ansArr[i];
+      } else {
+        document.getElementById("option_"+i).style.display="none";
+      }
+      
+    }
+    currQn++;
+  }
+</script>
+</html>
